@@ -8,6 +8,7 @@ La primera parte del proyecto fue la extracción, transformación y carga (ETL) 
 * Cambiar formatos de fechas
 * Pasar todos los textos a minúsculas
 * Generar mas columnas a partir de una columna
+
 Estas transformaciones estan con mas detalles en el noteboot de jupyter de <ETL>, también es importante aclarar que para estas transformaciones se utilizaron otros archivos que contienen datos de usuarios, no se encuentra en el repositorio por el peso de esta, ya que son archivos con millones de registros.
 
 ## _API_
