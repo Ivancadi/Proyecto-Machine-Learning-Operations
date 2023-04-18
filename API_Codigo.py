@@ -3,7 +3,7 @@ from fastapi import FastAPI
 import pandas as pd 
 
 # Ingestamos los datos a consumir 
-datos = pd.read_csv('datos_streaming_transformados.csv')
+datos = pd.read_csv('MLOpsReviews\datos_streaming_transformados.csv')
 
 # Creamos una varia para instanciar FastAPI
 app = FastAPI()
@@ -91,7 +91,7 @@ def prod_per_county(tipo: str, pais: str, anio: int):
     filtro = datos[(datos['type'] == tipo) & (datos['country'] == pais) & (datos['date_added'] == anio)]
     respuesta = filtro['type'].count()
     respuesta = int(respuesta)
-    return {'pais': pais, 'anio': anio, 'peliculas': respuesta}
+    return {'pais': pais, 'anio': anio, 'contenido': respuesta}
 
 
 
@@ -105,9 +105,61 @@ def get_contents(rating: str):
     respuesta = int(respuesta)
     return {'rating': rating, 'contenido': respuesta}
 
+''' A continuacion, veremos la funcion que nos ayuda a recomendar las peliculas, para esto tenemos
+que implementar el modelo primero'''
 
+# Clasificamos los datos con los que vamos a trabajar
+dato = ['title', 'listed_in', 'description']
+filtro = datos[dato][:5000]
+
+# Crearemos una funcion para eliminar los espacios que puedan haber en nuestros datos
+def limpiar_data(x):
+    return (x.replace(" ", ""))
+    
+# Aplicamos la funcion a nuestros datos
+for i in dato:
+    filtro[i] = filtro[i].apply(limpiar_data)
+
+# Creamos una cadena para contener los metados que alimentaran a nuestro a vector
+def cadena(x):
+    return x['title'] + ' ' + x['listed_in'] + ' ' + x['description'] 
+
+filtro['data'] = filtro.apply(cadena, axis=1)
+
+# Importamos CountVectorizer de sklearn y luego crear nuestra matrix
+from sklearn.feature_extraction.text import CountVectorizer
+
+conteo = CountVectorizer(stop_words='english')
+conteo_matrix = conteo.fit_transform(filtro['data'])
+
+# Ahora calculamos la matriz de similitud de coseno basada en la cuenta_matrix
+from sklearn.metrics.pairwise import cosine_similarity
+
+cos_sim = cosine_similarity(conteo_matrix, conteo_matrix)
+
+# Aqui reconstruimos el dataset original para obtener los indices
+filtro = filtro.reset_index()
+indices = pd.Series(filtro.index, index=filtro['title'])
 
 @app.get('/get_recomendation/{title}')
-def get_recomendation(title,):
-    respuesta = title
+def get_recomendation(title: str):
+    title = title.replace(' ', '').lower()
+    idx = indices[title]
+
+    # Obtenemos las puntuaciones de similitud de peliculas con la pelicula ingresada
+    sim_score = list(enumerate(cos_sim[idx]))
+
+    # Ordenamos las peliculas segun la puntuacion de similitud
+    sim_score = sorted(sim_score, key=lambda x: x[1], reverse=True)
+
+    # Obtenemos las puntuaciones de las 5 peliculas mas similares 
+    sim_score = sim_score[1:6]
+
+    # Obtenemos los indices de peliculas
+    pelicula_indice = [i[0] for i in sim_score]
+
+    # Obtenemos el nombre de las peliculas
+    respuesta = datos['title'].iloc[pelicula_indice]
+    respuesta = [i for i in respuesta]
+
     return {'recomendacion':respuesta}
