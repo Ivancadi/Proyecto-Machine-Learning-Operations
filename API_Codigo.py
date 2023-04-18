@@ -3,7 +3,7 @@ from fastapi import FastAPI
 import pandas as pd 
 
 # Ingestamos los datos a consumir 
-datos = pd.read_csv('MLOpsReviews\datos_streaming_transformados.csv')
+datos = pd.read_csv('datos_streaming_transformados.csv')
 
 # Creamos una varia para instanciar FastAPI
 app = FastAPI()
