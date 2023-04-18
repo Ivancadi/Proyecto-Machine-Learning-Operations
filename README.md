@@ -9,10 +9,10 @@ La primera parte del proyecto fue la extracción, transformación y carga (ETL) 
 * Pasar todos los textos a minúsculas
 * Generar mas columnas a partir de una columna
 
-Estas transformaciones estan con mas detalles en el noteboot de jupyter de <ETL>, también es importante aclarar que para estas transformaciones se utilizaron otros archivos que contienen datos de usuarios, no se encuentra en el repositorio por el peso de esta, ya que son archivos con millones de registros.
+Estas transformaciones estan con mas detalles en el noteboot de jupyter de < ETL >, también es importante aclarar que para estas transformaciones se utilizaron otros archivos que contienen datos de usuarios, no se encuentra en el repositorio por el peso de esta, ya que son archivos con millones de registros.
 
 ## _API_
-Luego de la ETL, se construyó una API con la librería FastAPI. La API consta de 6 funciones que ayudarían para consultar datos y, como última tarea, una septima función para recomendar películas similares a las películas que se les pase como parámetro a la función. Para esta ultima se desarrolla un modelo de machine learning.
+Luego de la ETL, se construyó una API con la librería FastAPI. La API consta de 6 funciones que ayudarían para consultar datos y, como última tarea, una septima función para recomendar películas similares a las películas que se les pase como parámetro a la función. Para esta ultima se desarrolla un modelo de machine learning. Para probar la API, utiliza la url que se encuentra en <urlApi> y para que la funcion de recomendacion de peliculas, utiliza datos del archivo <datos_para_probarML> la razon de este, es porque el modelo no se entreno con todos los datos por falta de recursos en la maquina.
 
 ## _Desarrollo de modelo de machine learning_
 La última parte del proyecto consistió en el desarrollo de un modelo de machine learning para recomendar películas similares a las que se les pase como parámetro en nuestra función de recomendación. Para desarrolar el modelo se utilizó la libreria sklearn, importando de esta la funcion cosine_similarity para medir la similitud entre los vectores en el espacio de características escogidas. Mas detalles en el notebook de jupyter <Modelo_MLOps>
