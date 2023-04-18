@@ -15,4 +15,4 @@ starlette
 typing_extensions
 tzdata
 uvicorn
-sklearn
+scikit-learn
